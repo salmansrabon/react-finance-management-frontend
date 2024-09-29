@@ -5,7 +5,8 @@ import Home from './pages/Home';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import AdminDashboard from './components/Admin/AdminDashboard';
-import UserDashboard from './components/User/UserDashboard'; // Import UserDashboard
+import UserDashboard from './components/User/UserDashboard';
+import AddCost from './components/User/AddCost';
 import UserDetail from './components/User/UserDetail';
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/user" element={<UserDashboard />} /> {/* Define /user route */}
+        <Route path="/user" element={<UserDashboard />} />
+        <Route path="/add-cost" element={<AddCost />} />
         <Route path="/user/:id" element={<UserDetail/>} />
       </Routes>
     </Router>
