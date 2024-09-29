@@ -33,6 +33,7 @@ const Register = () => {
     try {
       const { data } = await API.post('/auth/register', formData);
       setMessage(`User ${data.firstName} ${data.lastName} registered successfully!`);
+      alert('User registered successfully!');
       navigate('/login');
     } catch (err) {
       setMessage('Registration failed. Please try again.');

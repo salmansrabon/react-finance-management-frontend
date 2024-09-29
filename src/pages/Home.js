@@ -42,7 +42,7 @@ const Home = () => {
       <img src={logo} alt="App Logo" className="home-logo" />
       
       {/* Title */}
-      <h1 className="home-title">Welcome to Our Application</h1>
+      <h1 className="home-title">Welcome to <br/>daily finance management system</h1>
       
       {/* Login Form */}
       <div className="home-content">
