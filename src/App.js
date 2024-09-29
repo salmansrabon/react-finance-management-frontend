@@ -9,6 +9,7 @@ import UserDashboard from './components/User/UserDashboard';
 import UserDetail from './components/User/UserDetail';
 import AddCost from './components/User/AddCost';
 import CostDetail from './components/User/CostDetail';
+import PrivateRoute from './components/PrivateRoute';
 
 
 function App() {
@@ -18,11 +19,54 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/user" element={<UserDashboard />} />
-        <Route path="/user/:id" element={<UserDetail/>} />
-        <Route path="/cost/:id" element={<CostDetail />} />
-        <Route path="/add-cost" element={<AddCost />} />
+        <Route 
+          path="/admin" element={
+            <PrivateRoute>
+            <AdminDashboard />
+            </PrivateRoute>
+          } 
+        />
+        {/* Protected Routes (Wrapped with PrivateRoute) */}
+        <Route
+          path="/user"
+          element={
+            <PrivateRoute>
+              <UserDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/user/:id"
+          element={
+            <PrivateRoute>
+              <UserDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cost/:id"
+          element={
+            <PrivateRoute>
+              <CostDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/add-cost"
+          element={
+            <PrivateRoute>
+              <AddCost />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
         
       </Routes>
     </Router>
