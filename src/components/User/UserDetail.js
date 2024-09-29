@@ -1,20 +1,19 @@
 // src/components/User/UserDetail.js
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useCallback } from 'react'; // Import useCallback for memoization
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, TextField, Container, Typography, Paper, Grid } from '@mui/material'; // Import Material UI components
-import Header from '../Header'; // Import the existing Header component
+import { Button, TextField, Container, Typography, Paper, Grid } from '@mui/material';
+import Header from '../Header';
+import { API } from '../../api';
 
 const UserDetail = () => {
   const { id } = useParams(); // Get user ID from URL params
-  const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
   // Fetch user details by ID
-  const fetchUserDetails = async () => {
+  const fetchUserDetails = useCallback(async () => { // Use useCallback to memoize the function
     const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
 
     if (!token) {
@@ -23,20 +22,19 @@ const UserDetail = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/user/${id}`, {
+      const response = await API.get(`/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` }, // Include token in headers
       });
-      setUser(response.data);
       setFormData(response.data); // Initialize form data with user details
     } catch (err) {
       console.error('Error fetching user details:', err); // Log error for debugging
       setError('Failed to fetch user details. Unauthorized access.');
     }
-  };
+  }, [id]); // Add `id` as a dependency to `useCallback`
 
   useEffect(() => {
     fetchUserDetails();
-  }, [id]);
+  }, [fetchUserDetails]); // Use fetchUserDetails as a dependency
 
   // Handle form field changes
   const handleChange = (e) => {
@@ -46,7 +44,7 @@ const UserDetail = () => {
   // Handle update user
   const handleUpdateUser = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/user/${id}`, formData, {
+      await API.put(`/user/${id}`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
       });
       setIsEditing(false); // Switch back to view mode after update
@@ -61,7 +59,7 @@ const UserDetail = () => {
   const handleDeleteUser = async () => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/user/${id}`, {
+        await API.delete(`/user/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
         });
         alert('User deleted successfully!');

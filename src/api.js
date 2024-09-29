@@ -2,8 +2,9 @@
 import axios from 'axios';
 
 // Create an axios instance with the base URL of your backend
+console.log('API Base URL:', process.env.REACT_APP_BASE_API_URL);
 export const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_BASE_API_URL,
 });
 
 // Helper function to set the Authorization header
