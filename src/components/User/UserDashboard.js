@@ -1,5 +1,5 @@
 // src/components/User/UserDashboard.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { API } from '../../api';
 import './UserDashboard.css';
 import { useNavigate } from 'react-router-dom';
@@ -9,22 +9,36 @@ const UserDashboard = () => {
   const [costs, setCosts] = useState([]); // Holds all costs
   const [filteredCosts, setFilteredCosts] = useState([]); // Holds filtered costs
   const [searchTerm, setSearchTerm] = useState(''); // Holds search input value
+  const [loading, setLoading] = useState(true); // Track loading state
   const navigate = useNavigate();
 
   // Fetch all costs on component mount
-  useEffect(() => {
-    const fetchCosts = async () => {
-      try {
-        const response = await API.get('/costs'); // Replace with your actual endpoint
-        setCosts(response.data);
-        setFilteredCosts(response.data); // Initially set filteredCosts to all costs
-      } catch (error) {
-        console.error('Error fetching costs:', error);
-      }
-    };
+  const fetchCosts = useCallback(async () => {
+    const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
 
-    fetchCosts();
-  }, []);
+    if (!token) {
+      console.error('No token found. Please login again.');
+      navigate('/login'); // Redirect to login if no token found
+      return;
+    }
+
+    try {
+      setLoading(true); // Set loading to true before fetching
+      const response = await API.get('/costs', {
+        headers: { Authorization: `Bearer ${token}` }, // Include token in headers
+      });
+      setCosts(response.data);
+      setFilteredCosts(response.data); // Initially set filteredCosts to all costs
+    } catch (error) {
+      console.error('Error fetching costs:', error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchCosts(); // Fetch costs when component mounts
+  }, [fetchCosts]);
 
   // Calculate total amount based on filtered costs
   const calculateTotalAmount = (costsArray) => {
@@ -67,49 +81,52 @@ const UserDashboard = () => {
           />
         </div>
 
-        {/* Cost Table */}
-        <table>
-          <thead>
-            <tr>
-              <th>Item Name</th>
-              <th>Quantity</th>
-              <th>Amount</th>
-              <th>Purchase Date</th>
-              <th>Month</th>
-              <th>Remarks</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCosts.length > 0 ? (
-              filteredCosts.map((cost) => (
-                <tr key={cost._id}>
-                  <td>{cost.itemName}</td>
-                  <td>{cost.quantity}</td>
-                  <td>{cost.amount}</td>
-                  <td>{new Date(cost.purchaseDate).toLocaleDateString()}</td>
-                  <td>{cost.month}</td>
-                  <td>{cost.remarks}</td>
-                  <td>
-                    <button onClick={() => navigate(`/cost/${cost._id}`)} className="view-button">
-                      View
-                    </button>
+        {/* Show a loading spinner or text while loading */}
+        {loading ? (
+          <p>Loading costs...</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>Purchase Date</th>
+                <th>Month</th>
+                <th>Remarks</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCosts.length > 0 ? (
+                filteredCosts.map((cost) => (
+                  <tr key={cost._id}>
+                    <td>{cost.itemName}</td>
+                    <td>{cost.quantity}</td>
+                    <td>{cost.amount}</td>
+                    <td>{new Date(cost.purchaseDate).toLocaleDateString()}</td>
+                    <td>{cost.month}</td>
+                    <td>{cost.remarks}</td>
+                    <td>
+                      <button onClick={() => navigate(`/cost/${cost._id}`)} className="view-button">
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="no-data">
+                    No costs found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="no-data">
-                  No costs found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
 };
-
 
 export default UserDashboard;
