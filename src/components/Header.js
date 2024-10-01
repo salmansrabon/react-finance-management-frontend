@@ -8,6 +8,9 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
+  // Retrieve user ID from local storage after login
+  const userId = JSON.parse(localStorage.getItem('authTokenData'))?._id || ''; // Parse and get user ID
+
   // Handle menu open and close
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -17,9 +20,20 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  // Handle Profile redirection
+  const handleProfile = () => {
+    setAnchorEl(null);
+    if (userId) {
+      navigate(`/user/${userId}`); // Navigate to user details with the user ID
+    } else {
+      alert('User ID not found. Please log in again.');
+    }
+  };
+
   // Handle logout functionality
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Remove token from localStorage
+    localStorage.removeItem('authTokenData'); // Remove user data from localStorage
     navigate('/login'); // Redirect to login page
   };
 
@@ -56,7 +70,7 @@ const Header = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleProfile}>Profile</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </div>

@@ -14,15 +14,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Send login request to API
       const { data } = await API.post('/auth/login', { email, password });
-      localStorage.setItem('authToken', data.token); // Save token in localStorage
+
+      // Save token and user data in localStorage
+      localStorage.setItem('authToken', data.token); // Store only the token separately
+      localStorage.setItem('authTokenData', JSON.stringify(data)); // Store complete user data including ID and role
+
+      // Redirect based on the user's role
       if (data.role === 'admin') {
-        navigate('/admin');
+        navigate('/admin'); // Redirect to admin dashboard
       } else {
-        navigate('/user');
+        navigate('/user'); // Redirect to user dashboard
       }
     } catch (err) {
-      setError('Invalid email or password');
+      setError('Invalid email or password'); // Show error if login fails
     }
   };
 

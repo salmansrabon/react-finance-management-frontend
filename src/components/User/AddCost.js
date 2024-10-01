@@ -118,7 +118,6 @@ const AddCost = () => {
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
               rows="3"
-              required
             />
           </div>
 

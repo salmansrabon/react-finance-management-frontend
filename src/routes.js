@@ -5,6 +5,7 @@ import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import UserDashboard from './components/User/UserDashboard';
+import UserDetail from './components/User/UserDetail';
 import Navbar from './components/Layout/Navbar';
 
 const AppRoutes = () => {
@@ -16,7 +17,7 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/user" element={<UserDashboard />} />
-        {/* <Route path="/profile" element={<Profile />} /> */}
+        <Route path="/user/:id" element={<UserDetail />} />
       </Routes>
     </Router>
   );
