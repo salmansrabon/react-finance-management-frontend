@@ -1,20 +1,23 @@
 // src/components/User/UserDetail.js
-import React, { useEffect, useState, useCallback } from 'react'; // Import useCallback for memoization
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, TextField, Container, Typography, Paper, Grid } from '@mui/material';
+import { Button, TextField, Container, Typography, Paper, Grid, Avatar } from '@mui/material';
 import Header from '../Header';
 import { API } from '../../api';
+import './UserDetail.css'; // Import the CSS file
 
 const UserDetail = () => {
   const { id } = useParams(); // Get user ID from URL params
-  const [isEditing, setIsEditing] = useState(false); // Track edit mode
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [profileImage, setProfileImage] = useState(''); // State to hold the profile image URL
+  const [selectedFile, setSelectedFile] = useState(null); // State for the new image file
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
   // Fetch user details by ID
-  const fetchUserDetails = useCallback(async () => { // Use useCallback to memoize the function
-    const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
+  const fetchUserDetails = useCallback(async () => {
+    const token = localStorage.getItem('authToken');
 
     if (!token) {
       setError('No token found. Please login again.');
@@ -23,22 +26,55 @@ const UserDetail = () => {
 
     try {
       const response = await API.get(`/user/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }, // Include token in headers
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setFormData(response.data); // Initialize form data with user details
+      setFormData(response.data);
+      setProfileImage(response.data.profileImage); // Set profile image URL
     } catch (err) {
-      console.error('Error fetching user details:', err); // Log error for debugging
+      console.error('Error fetching user details:', err);
       setError('Failed to fetch user details. Unauthorized access.');
     }
-  }, [id]); // Add `id` as a dependency to `useCallback`
+  }, [id]);
 
   useEffect(() => {
-    fetchUserDetails();
-  }, [fetchUserDetails]); // Use fetchUserDetails as a dependency
+    fetchUserDetails(); // Fetch user details when component mounts
+  }, [fetchUserDetails]);
 
   // Handle form field changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle file input change
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  // Handle profile image upload
+  const handleImageUpload = async () => {
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('profileImage', selectedFile); // Append the selected file
+
+    try {
+      const response = await API.put(`/user/${id}/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setProfileImage(response.data.profileImageUrl); // Update the profile image URL state
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        profileImage: response.data.profileImageUrl, // Update profileImage in formData
+      })); // Update the formData state with the new profile image URL
+      alert('Image uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setError('Failed to upload image.');
+    }
   };
 
   // Handle update user
@@ -47,7 +83,7 @@ const UserDetail = () => {
       await API.put(`/user/${id}`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
       });
-      setIsEditing(false); // Switch back to view mode after update
+      setIsEditing(false);
       alert('User updated successfully!');
     } catch (error) {
       console.error('Error updating user:', error);
@@ -63,7 +99,7 @@ const UserDetail = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
         });
         alert('User deleted successfully!');
-        navigate('/admin'); // Redirect to admin dashboard after deletion
+        navigate('/admin');
       } catch (error) {
         console.error('Error deleting user:', error);
         setError('Failed to delete user.');
@@ -73,11 +109,10 @@ const UserDetail = () => {
 
   return (
     <>
-      {/* Include the Header at the top of the User Detail Page */}
       <Header />
 
       <Container maxWidth="md">
-        <Paper elevation={3} style={{ padding: '20px', marginTop: '20px' }}>
+        <Paper elevation={3} className="user-detail-paper">
           <Typography variant="h4" gutterBottom align="center">
             User Details
           </Typography>
@@ -86,6 +121,33 @@ const UserDetail = () => {
               {error}
             </Typography>
           )}
+
+          <div className="image-container">
+            {/* Display profile image */}
+            {profileImage ? (
+              <img
+                className="profile-image"
+                src={`http://localhost:5000${profileImage}`} // Use the correct base URL for image
+                alt="User"
+              />
+            ) : (
+              <div className="no-image">N/A</div>
+            )}
+            {/* File input for updating image */}
+            {isEditing && (
+              <div className="upload-section">
+                <input
+                  type="file"
+                  className="upload-input"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
+                <Button variant="contained" onClick={handleImageUpload} className="upload-button">
+                  Upload Image
+                </Button>
+              </div>
+            )}
+          </div>
 
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -151,7 +213,7 @@ const UserDetail = () => {
             </Grid>
           </Grid>
 
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <div className="button-section">
             {isEditing ? (
               <Button variant="contained" color="primary" onClick={handleUpdateUser}>
                 Update
@@ -165,7 +227,7 @@ const UserDetail = () => {
               variant="contained"
               color="error"
               onClick={handleDeleteUser}
-              style={{ marginLeft: '10px' }}
+              className="delete-button"
             >
               Delete
             </Button>

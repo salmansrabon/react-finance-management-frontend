@@ -1,0 +1,101 @@
+/* src/components/User/UserDetail.css */
+
+.user-detail-paper {
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Container for the profile image */
+  .image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Profile Image Styling */
+  .profile-image {
+    width: 150px; /* Increase size to 150px */
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3f51b5;
+    margin-top: 20px; /* Adds some space above the image */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow for better appearance */
+  }
+
+/* Styling for when no image is available */
+.no-image {
+    width: 150px; /* Match no-image container size */
+    height: 150px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Upload section styling */
+.user-detail-paper {
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Container for the profile image */
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Center items vertically */
+    margin-bottom: 20px;
+  }
+  
+  /* Profile Image Styling */
+  .profile-image {
+    width: 150px; /* Adjusted width */
+    height: 150px; /* Adjusted height */
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3f51b5;
+    margin-bottom: 10px; /* Add some space below the image */
+  }
+  
+  /* Styling for when no image is available */
+  .no-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: #888;
+    border: 2px solid #3f51b5;
+  }
+  
+  /* Upload section styling */
+  .upload-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .upload-input {
+    display: block;
+  }
+  
+  .upload-button {
+    margin-left: 10px;
+  }
+  
+  /* Button section styling */
+  .button-section {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .button-section .delete-button {
+    margin-left: 10px;
+  }
