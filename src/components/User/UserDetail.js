@@ -1,7 +1,7 @@
 // src/components/User/UserDetail.js
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, TextField, Container, Typography, Paper, Grid, Avatar } from '@mui/material';
+import { Button, TextField, Container, Typography, Paper, Grid } from '@mui/material';
 import Header from '../Header';
 import { API } from '../../api';
 import './UserDetail.css'; // Import the CSS file
@@ -127,7 +127,7 @@ const UserDetail = () => {
             {profileImage ? (
               <img
                 className="profile-image"
-                src={`https://dailyfinanceapi.roadtocareer.net${profileImage}`} // Use the correct base URL for image
+                src={`${process.env.REACT_APP_BASE_API_URL.replace('/api', '')}${profileImage}`}
                 alt="User"
               />
             ) : (
