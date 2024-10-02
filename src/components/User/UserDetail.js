@@ -127,7 +127,7 @@ const UserDetail = () => {
             {profileImage ? (
               <img
                 className="profile-image"
-                src={`http://localhost:5000${profileImage}`} // Use the correct base URL for image
+                src={`https://dailyfinanceapi.roadtocareer.net${profileImage}`} // Use the correct base URL for image
                 alt="User"
               />
             ) : (
