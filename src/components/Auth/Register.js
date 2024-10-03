@@ -68,7 +68,6 @@ const Register = () => {
             margin="normal"
             value={formData.lastName}
             onChange={handleChange}
-            required
           />
           <TextField
             id="email"
@@ -114,7 +113,6 @@ const Register = () => {
             margin="normal"
             value={formData.address}
             onChange={handleChange}
-            required
           />
           <div className="auth-gender-group">
             <label>Gender:</label>

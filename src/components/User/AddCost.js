@@ -31,6 +31,7 @@ const AddCost = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      alert('Product added successfully!');
       navigate('/user'); // Redirect to User Dashboard after submission
     } catch (error) {
       console.error('Error creating cost:', error);
