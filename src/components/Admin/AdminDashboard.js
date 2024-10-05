@@ -1,10 +1,9 @@
-// src/components/Admin/AdminDashboard.js
 import React, { useEffect, useState } from 'react';
 import { API } from '../../api';
 import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import Pagination from '../Pagination'; // Import Pagination component
+import Pagination from '../Pagination';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -13,6 +12,7 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1); // Current active page
   const [itemsPerPage, setItemsPerPage] = useState(10); // Items per page
+  const [loading, setLoading] = useState(true); // Added loading state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,14 +25,17 @@ const AdminDashboard = () => {
       }
 
       try {
+        setLoading(true); // Start loading
         const response = await API.get('/user/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
         // Sort users by createdAt field in descending order
         const sortedUsers = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setUsers(sortedUsers);
+        setLoading(false); // End loading after setting users
       } catch (err) {
         setError('Failed to fetch users. Unauthorized access.');
+        setLoading(false); // End loading if there's an error
       }
     };
 
@@ -69,6 +72,11 @@ const AdminDashboard = () => {
     setCurrentPage(1); // Reset to the first page whenever items per page change
   };
 
+  // Debugging logs
+  console.log('All Users:', users); // Log all users fetched
+  console.log('Filtered Users:', filteredUsers); // Log the filtered users array
+  console.log('Filtered Users Length:', filteredUsers.length); // Log the filtered users count
+
   return (
     <div>
       <Header />
@@ -76,63 +84,76 @@ const AdminDashboard = () => {
         <h2>Admin Dashboard</h2>
         {error && <p className="error-message">{error}</p>}
 
-        {/* Search Box */}
-        <input
-          type="text"
-          placeholder="Search by any field..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-box"
-        />
+        {/* Show loading indicator */}
+        {loading ? (
+          <p>Loading users...</p>
+        ) : (
+          <>
+            {/* Search Box with Total Count */}
+            <div className="search-and-count">
+              <input
+                type="text"
+                placeholder="Search by any field..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-box"
+              />
+              {/* Display total count of users */}
+              <span className="total-count">
+                Total Users: {filteredUsers.length > 0 ? filteredUsers.length : '0'}
+              </span>
+            </div>
 
-        {/* User Table */}
-        <table>
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Phone Number</th>
-              <th>Address</th>
-              <th>Gender</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUsers.length > 0 ? (
-              currentUsers.map((user) => (
-                <tr key={user._id}>
-                  <td>{user.firstName}</td>
-                  <td>{user.lastName}</td>
-                  <td>{user.email}</td>
-                  <td>{user.phoneNumber}</td>
-                  <td>{user.address}</td>
-                  <td>{user.gender}</td>
-                  <td>
-                    <Button onClick={() => handleViewUser(user._id)}>
-                      View
-                    </Button>
-                  </td>
+            {/* User Table */}
+            <table>
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>Phone Number</th>
+                  <th>Address</th>
+                  <th>Gender</th>
+                  <th>View</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="no-data">
-                  No users found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {currentUsers.length > 0 ? (
+                  currentUsers.map((user) => (
+                    <tr key={user._id}>
+                      <td>{user.firstName}</td>
+                      <td>{user.lastName}</td>
+                      <td>{user.email}</td>
+                      <td>{user.phoneNumber}</td>
+                      <td>{user.address}</td>
+                      <td>{user.gender}</td>
+                      <td>
+                        <Button onClick={() => handleViewUser(user._id)}>
+                          View
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="no-data">
+                      No users found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
 
-        {/* Pagination Component */}
-        <Pagination
-          totalItems={filteredUsers.length} // Total number of filtered users
-          itemsPerPage={itemsPerPage} // Number of items to display per page
-          currentPage={currentPage} // Current active page
-          onPageChange={handlePageChange} // Handler for page change
-          onItemsPerPageChange={handleItemsPerPageChange} // Handler for items per page change
-        />
+            {/* Pagination Component */}
+            <Pagination
+              totalItems={filteredUsers.length} // Total number of filtered users
+              itemsPerPage={itemsPerPage} // Number of items to display per page
+              currentPage={currentPage} // Current active page
+              onPageChange={handlePageChange} // Handler for page change
+              onItemsPerPageChange={handleItemsPerPageChange} // Handler for items per page change
+            />
+          </>
+        )}
       </div>
     </div>
   );

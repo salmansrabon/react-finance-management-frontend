@@ -1,48 +1,138 @@
 /* src/components/Admin/AdminDashboard.css */
+
+/* Overall admin dashboard container */
 .admin-dashboard {
   padding: 20px;
+  background-color: #f5f5f5; /* Light background color */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+  max-width: 1200px; /* Limit the width */
+  margin: 20px auto; /* Center the dashboard */
 }
 
-.admin-dashboard h2 {
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.admin-dashboard .search-box {
+/* Search box and total count container */
+.search-and-count {
+  display: flex; /* Use flex to align search box and total count */
+  justify-content: space-between; /* Space between items */
+  align-items: center; /* Center vertically */
   margin-bottom: 20px;
   padding: 10px;
-  width: 100%;
-  max-width: 400px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  background-color: #fff; /* White background for container */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
 }
 
-.admin-dashboard table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.admin-dashboard th,
-.admin-dashboard td {
+/* Styling for the search box */
+.search-box {
+  width: 60%; /* Adjust the width as needed */
   padding: 12px;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 8px; /* Rounded corners */
+  outline: none;
+  transition: border-color 0.3s ease; /* Smooth border transition */
+}
+
+/* Search box focus effect */
+.search-box:focus {
+  border-color: #4e54c8; /* Change border color on focus */
+}
+
+/* Styling for the total count */
+.total-count {
+  font-size: 18px;
+  font-weight: bold;
+  color: #4e54c8; /* Primary color */
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse; /* Remove gaps between table cells */
+  background-color: #fff; /* White background */
+  border-radius: 8px;
+  overflow: hidden; /* Round table corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+/* Table header styling */
+table th {
+  background-color: #4e54c8; /* Primary background color */
+  color: #000; /* White text */
+  padding: 15px 10px;
   text-align: left;
 }
 
-.admin-dashboard th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+/* Table body styling */
+table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd; /* Light border for rows */
 }
 
-.admin-dashboard tr:hover {
-  background-color: #f1f1f1;
+/* Alternate row coloring */
+table tbody tr:nth-of-type(odd) {
+  background-color: #f9f9f9; /* Light gray for alternate rows */
 }
 
-.admin-dashboard .no-data {
+/* No data found styling */
+.no-data {
   text-align: center;
   padding: 20px;
-  color: #999;
+  color: #999; /* Light gray color */
+}
+
+/* Button styles for View */
+table button {
+  background-color: #4e54c8; /* Primary color */
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+table button:hover {
+  background-color: #3b45a5; /* Darker shade on hover */
+}
+
+/* Pagination container */
+.pagination-container {
+  display: flex;
+  justify-content: center; /* Center the pagination */
+  align-items: center;
+  margin-top: 20px; /* Spacing above pagination */
+}
+
+/* Pagination button styling */
+.page-number {
+  background-color: #fff;
+  color: #4e54c8;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Active page button styling */
+.page-number.active {
+  background-color: #4e54c8; /* Active background color */
+  color: #fff; /* White text */
+}
+
+/* Page number hover effect */
+.page-number:hover {
+  background-color: #e0e0e0; /* Light gray background */
+}
+
+/* Items per page dropdown styling */
+.items-per-page-select {
+  margin-left: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  outline: none;
 }
