@@ -4,12 +4,15 @@ import { API } from '../../api';
 import './UserDashboard.css';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
+import Pagination from '../Pagination'; // Import the Pagination component
 
 const UserDashboard = () => {
   const [costs, setCosts] = useState([]); // Holds all costs
   const [filteredCosts, setFilteredCosts] = useState([]); // Holds filtered costs
   const [searchTerm, setSearchTerm] = useState(''); // Holds search input value
   const [loading, setLoading] = useState(true); // Track loading state
+  const [currentPage, setCurrentPage] = useState(1); // Current active page
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Items per page
   const navigate = useNavigate();
 
   // Fetch all costs on component mount
@@ -27,8 +30,10 @@ const UserDashboard = () => {
       const response = await API.get('/costs', {
         headers: { Authorization: `Bearer ${token}` }, // Include token in headers
       });
-      setCosts(response.data);
-      setFilteredCosts(response.data); // Initially set filteredCosts to all costs
+      // Sort costs in descending order by purchaseDate (or any date field)
+      const sortedCosts = response.data.sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
+      setCosts(sortedCosts);
+      setFilteredCosts(sortedCosts); // Initially set filteredCosts to all costs
     } catch (error) {
       console.error('Error fetching costs:', error);
     } finally {
@@ -54,6 +59,22 @@ const UserDashboard = () => {
     );
     setFilteredCosts(filtered); // Update filtered costs
   }, [searchTerm, costs]); // Re-run filtering when searchTerm or costs change
+
+  // Get current items for the active page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCosts.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to page 1 whenever items per page change
+  };
 
   // Calculate total rows and total amount
   const totalRows = filteredCosts.length;
@@ -85,44 +106,56 @@ const UserDashboard = () => {
         {loading ? (
           <p>Loading costs...</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Item Name</th>
-                <th>Quantity</th>
-                <th>Amount</th>
-                <th>Purchase Date</th>
-                <th>Month</th>
-                <th>Remarks</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCosts.length > 0 ? (
-                filteredCosts.map((cost) => (
-                  <tr key={cost._id}>
-                    <td>{cost.itemName}</td>
-                    <td>{cost.quantity}</td>
-                    <td>{cost.amount}</td>
-                    <td>{new Date(cost.purchaseDate).toLocaleDateString()}</td>
-                    <td>{cost.month}</td>
-                    <td>{cost.remarks}</td>
-                    <td>
-                      <button onClick={() => navigate(`/cost/${cost._id}`)} className="view-button">
-                        View
-                      </button>
+          <>
+            {/* Cost Table */}
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Quantity</th>
+                  <th>Amount</th>
+                  <th>Purchase Date</th>
+                  <th>Month</th>
+                  <th>Remarks</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.length > 0 ? (
+                  currentItems.map((cost) => (
+                    <tr key={cost._id}>
+                      <td>{cost.itemName}</td>
+                      <td>{cost.quantity}</td>
+                      <td>{cost.amount}</td>
+                      <td>{new Date(cost.purchaseDate).toLocaleDateString()}</td>
+                      <td>{cost.month}</td>
+                      <td>{cost.remarks}</td>
+                      <td>
+                        <button onClick={() => navigate(`/cost/${cost._id}`)} className="view-button">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="no-data">
+                      No costs found.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="no-data">
-                    No costs found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+
+            {/* Pagination Component */}
+            <Pagination
+              totalItems={filteredCosts.length}
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
+          </>
         )}
       </div>
     </div>

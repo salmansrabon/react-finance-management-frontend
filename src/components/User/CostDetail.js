@@ -64,6 +64,7 @@ const CostDetail = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setIsEditing(false); // Disable editing mode after successful update
+            alert('Cost details updated successfully.');
         } catch (err) {
             setError('Failed to update cost details.');
         }

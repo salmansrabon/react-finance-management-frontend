@@ -1,0 +1,33 @@
+/* src/components/Pagination.css */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .items-per-page-select {
+    margin-right: 10px;
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  .page-number {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #4e54c8;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .page-number.active {
+    background-color: #4e54c8;
+    color: white;
+  }
+  
+  .page-number:hover {
+    background-color: #8f94fb;
+    color: white;
+  }
+  
