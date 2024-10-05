@@ -19,6 +19,7 @@ const Register = () => {
     termsAccepted: false,
   });
 
+  const [toastPaused, setToastPaused] = useState(false); // Track if toast is paused
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -33,17 +34,21 @@ const Register = () => {
     e.preventDefault();
     try {
       const { data } = await API.post('/auth/register', formData);
-      
+
       // Show success toast message
-      toast.success(`User ${data.firstName} ${data.lastName} registered successfully!`,
-        {toastId: 'notifyme'});
-      
-      // After showing the toast, navigate to login page
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000); // Redirect after 2 seconds to give time for the toast to display
+      toast.success(`User ${data.firstName} ${data.lastName} registered successfully!`, {
+        toastId: 'notifyme',
+        onOpen: () => setToastPaused(false),  // Set toastPaused to false when toast opens
+        onClose: () => {
+          if (!toastPaused) {
+            navigate('/login');
+          }
+        }, // Navigate to login only if not paused
+        onMouseEnter: () => setToastPaused(true), // Set toastPaused to true on hover
+        onMouseLeave: () => setToastPaused(false), // Set toastPaused to false when hover ends
+      });
+
     } catch (err) {
-      // Show error toast message
       toast.error('Registration failed. Please try again.');
     }
   };
