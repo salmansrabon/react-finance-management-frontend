@@ -1,86 +1,109 @@
 /* src/pages/Home.css */
 
+/* Full-page container with gradient background */
 .home-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background: linear-gradient(to right, #6a11cb, #2575fc); /* Gradient background */
-  color: #fff;
-}
-
-.home-logo {
-  width: 120px; /* Adjust the size as needed */
-  margin-bottom: 20px; /* Space between logo and title */
-}
-
-.home-title {
-  font-size: 2.5rem;
-  margin-bottom: 30px;
-  text-align: center; /* Center align the text */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  line-height: 1.2; /* Adjust line height for better spacing */
-  display: inline-block; /* Prevent full-width block */
-  width: 100%; /* Full-width for proper alignment */
-}
-
-.home-content {
-  width: 400px;
-  background: #ffffff;
-  padding: 40px; /* Increased padding for better spacing */
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  color: #333;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center align the form elements */
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  padding: 0; /* Removed extra padding */
+  margin: 0; /* Ensured there is no margin */
 }
 
-.home-content h2 {
+/* Logo styling */
+.home-logo {
+  width: 100px;
+  margin-bottom: 10px; /* Reduced margin to align better */
+}
+
+/* Title styling */
+.home-title {
+  font-size: 30px; /* Adjusted font size */
+  color: #ffffff;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* Reduced bottom margin */
+  font-weight: bold;
 }
 
+/* Content container for form and links */
+.home-content {
+  background-color: #ffffff;
+  padding: 20px 30px; /* Reduced padding for less whitespace */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px; /* Reduced width */
+  margin-top: 0px; /* Added margin-top to separate from the title */
+}
+
+/* Login form container */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Error message styling */
+.error-message {
+  color: #ff4d4f;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Form input fields */
 .form-group {
+  margin-bottom: 15px; /* Reduced bottom margin */
   width: 100%;
-  margin-bottom: 15px; /* Space between form fields */
 }
 
 .form-group label {
   display: block;
   margin-bottom: 5px;
+  color: #333333;
 }
 
 .form-group input {
-  width: calc(100% - 10px); /* Set input width with small padding */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.home-content button {
   width: 100%;
-  padding: 10px;
-  background: #007bff;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
+  padding: 12px;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  margin-top: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
 }
 
-.home-content button:hover {
-  background: #0056b3;
+/* Input focus effect */
+.form-group input:focus {
+  border-color: #4e54c8;
 }
 
-.auth-link {
-  text-align: center;
-  margin-top: 15px;
-  color: #007bff;
+/* Login button */
+button[name="login"] {
+  background-color: #4e54c8;
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 10px; /* Reduced margin-top */
+}
+
+button[name="login"]:hover {
+  background-color: #8f94fb;
+}
+
+/* Register link */
+.auth-link {
+  margin-top: 15px; /* Reduced margin-top */
+  text-align: center;
+  color: #666;
+}
+
+.auth-link a {
+  color: #4e54c8;
   text-decoration: none;
 }
 

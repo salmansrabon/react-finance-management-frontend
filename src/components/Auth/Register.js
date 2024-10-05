@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify'; // Import Toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import react-toastify CSS
 import { API } from '../../api';
 import './Auth.css';
 
@@ -17,7 +19,6 @@ const Register = () => {
     termsAccepted: false,
   });
 
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -32,21 +33,28 @@ const Register = () => {
     e.preventDefault();
     try {
       const { data } = await API.post('/auth/register', formData);
-      setMessage(`User ${data.firstName} ${data.lastName} registered successfully!`);
-      alert('User registered successfully!');
-      navigate('/login');
+      
+      // Show success toast message
+      toast.success(`User ${data.firstName} ${data.lastName} registered successfully!`,
+        {toastId: 'notifyme'});
+      
+      // After showing the toast, navigate to login page
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000); // Redirect after 2 seconds to give time for the toast to display
     } catch (err) {
-      setMessage('Registration failed. Please try again.');
+      // Show error toast message
+      toast.error('Registration failed. Please try again.');
     }
   };
 
   return (
     <Container maxWidth="xs">
+      <ToastContainer position="bottom-center" autoClose={3000} pauseOnHover /> {/* Add ToastContainer for toast messages */}
       <Box className="auth-box">
         <Typography variant="h4" component="h1" className="auth-title">
           Register
         </Typography>
-        {message && <Typography color="success">{message}</Typography>}
         <form onSubmit={handleSubmit}>
           <TextField
             id="firstName"
@@ -140,7 +148,7 @@ const Register = () => {
             />{' '}
             I accept the terms and conditions
           </div>
-          <Button type="submit" variant="contained" color="primary" fullWidth className="auth-button">
+          <Button type="submit" id="register" variant="contained" color="primary" fullWidth className="auth-button">
             Register
           </Button>
         </form>

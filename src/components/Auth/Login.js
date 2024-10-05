@@ -4,15 +4,18 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { API } from '../../api';
 import './Auth.css';
+import Loader from '../Loader'; // Import the Loader component
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // State to manage loader visibility
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Show loader
     try {
       // Send login request to API
       const { data } = await API.post('/auth/login', { email, password });
@@ -29,16 +32,16 @@ const Login = () => {
       }
     } catch (err) {
       setError('Invalid email or password'); // Show error if login fails
+    } finally {
+      setLoading(false); // Hide loader after login attempt
     }
-  };
-
-  // Function to handle registration button click
-  const handleRegister = () => {
-    navigate('/register'); // Navigate to the registration page
   };
 
   return (
     <div className="login-container">
+      {/* Show the Loader when loading is true */}
+      {loading && <Loader />}
+
       <Container maxWidth="xs" className="login-box">
         <Typography variant="h4" component="h1" align="center" className="login-title">
           Login
@@ -69,24 +72,16 @@ const Login = () => {
             required
             className="login-input"
           />
-          <Button id="submit" type="submit" variant="contained" color="primary" fullWidth className="login-button">
+          <Button name="login" type="submit" variant="contained" color="primary" fullWidth className="login-button">
             Login
           </Button>
         </Box>
 
-        {/* Register Button */}
-        <Typography align="center" className="register-text">
-          Don’t have an account?
-        </Typography>
-        <Button
-          variant="text"
-          color="secondary"
-          onClick={handleRegister}
-          className="register-button"
-          fullWidth
-        >
-          Register
-        </Button>
+        {/* Register Link */}
+        <div className="auth-link">
+          <span>Don't have an account? </span>
+          <a href="/register">Register</a>
+        </div>
       </Container>
     </div>
   );
