@@ -1,4 +1,3 @@
-// src/components/User/UserDetail.js
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, TextField, Container, Typography, Paper, Grid } from '@mui/material';
@@ -209,6 +208,16 @@ const UserDetail = () => {
                 value={formData.gender || ''}
                 onChange={handleChange}
                 disabled={!isEditing}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {/* Registration Date Field */}
+              <TextField
+                fullWidth
+                label="Registration Date"
+                name="registrationDate"
+                value={new Date(formData.createdAt).toLocaleDateString() || ''} // Format the date
+                disabled={true} // Keep it always disabled
               />
             </Grid>
           </Grid>

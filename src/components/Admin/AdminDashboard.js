@@ -51,13 +51,15 @@ const AdminDashboard = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   // Filter users based on search term and paginate the results
-  const filteredUsers = users.filter((user) =>
-    Object.values(user).some(
+  const filteredUsers = users.filter((user) => {
+    const formattedDate = new Date(user.createdAt).toLocaleDateString();
+    return Object.values(user).some(
       (value) =>
         typeof value === 'string' &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+        value.toLowerCase().includes(searchTerm.toLowerCase()) || // Standard string comparison
+        formattedDate.includes(searchTerm) // Date comparison
+    );
+  });
 
   const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem); // Get users for the current page
 
@@ -71,11 +73,6 @@ const AdminDashboard = () => {
     setItemsPerPage(items);
     setCurrentPage(1); // Reset to the first page whenever items per page change
   };
-
-  // Debugging logs
-  console.log('All Users:', users); // Log all users fetched
-  console.log('Filtered Users:', filteredUsers); // Log the filtered users array
-  console.log('Filtered Users Length:', filteredUsers.length); // Log the filtered users count
 
   return (
     <div>
@@ -93,7 +90,7 @@ const AdminDashboard = () => {
             <div className="search-and-count">
               <input
                 type="text"
-                placeholder="Search by any field..."
+                placeholder="Search by any field or date..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-box"
@@ -114,6 +111,7 @@ const AdminDashboard = () => {
                   <th>Phone Number</th>
                   <th>Address</th>
                   <th>Gender</th>
+                  <th>Registration Date</th> {/* Added new column */}
                   <th>View</th>
                 </tr>
               </thead>
@@ -127,6 +125,7 @@ const AdminDashboard = () => {
                       <td>{user.phoneNumber}</td>
                       <td>{user.address}</td>
                       <td>{user.gender}</td>
+                      <td>{new Date(user.createdAt).toLocaleDateString()}</td> {/* Display registration date */}
                       <td>
                         <Button onClick={() => handleViewUser(user._id)}>
                           View
@@ -136,7 +135,7 @@ const AdminDashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="no-data">
+                    <td colSpan="8" className="no-data">
                       No users found
                     </td>
                   </tr>
