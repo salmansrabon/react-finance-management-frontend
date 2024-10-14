@@ -1,4 +1,3 @@
-// src/components/Pagination.js
 import React from 'react';
 import './Pagination.css';
 
@@ -6,8 +5,46 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange, onIte
   // Calculate total number of pages
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Create an array of pages [1, 2, 3, ..., totalPages]
-  const pageNumbers = [...Array(totalPages).keys()].map(num => num + 1);
+  // Helper function to generate page numbers with dots
+  const getPaginationGroup = () => {
+    const maxPageNumbersToShow = 3; // Number of page buttons to show around the current page
+    const pageNumbers = [];
+    const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbersToShow / 2));
+    const endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
+
+    // Always show the first two pages
+    if (startPage > 1) {
+      pageNumbers.push(1);
+      if (startPage > 2) {
+        pageNumbers.push(2);
+      }
+    }
+
+    // Add dots if needed
+    if (startPage > 3) {
+      pageNumbers.push('...');
+    }
+
+    // Show pages around the current page
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    // Add dots after the last displayed page if there are hidden pages
+    if (endPage < totalPages - 2) {
+      pageNumbers.push('...');
+    }
+
+    // Always show the last two pages
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pageNumbers.push(totalPages - 1);
+      }
+      pageNumbers.push(totalPages);
+    }
+
+    return pageNumbers;
+  };
 
   return (
     <div className="pagination-container">
@@ -22,12 +59,13 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange, onIte
         <option value={50}>50</option>
       </select>
 
-      {/* Page numbers */}
-      {pageNumbers.map(number => (
+      {/* Page numbers with dots */}
+      {getPaginationGroup().map((number, index) => (
         <button
-          key={number}
+          key={index}
           className={`page-number ${number === currentPage ? 'active' : ''}`}
-          onClick={() => onPageChange(number)}
+          onClick={() => number !== '...' && onPageChange(number)}
+          disabled={number === '...'}
         >
           {number}
         </button>
