@@ -1,4 +1,3 @@
-// src/components/Auth/Login.js
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -17,35 +16,26 @@ const Login = () => {
     e.preventDefault();
     setLoading(true); // Show loader
     try {
-      // Send login request to API
       const { data } = await API.post('/auth/login', { email, password });
-
-      // Save token and user data in localStorage
-      localStorage.setItem('authToken', data.token); // Store only the token separately
-      localStorage.setItem('authTokenData', JSON.stringify(data)); // Store complete user data including ID and role
-
-      // Redirect based on the user's role
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('authTokenData', JSON.stringify(data));
       if (data.role === 'admin') {
-        navigate('/admin'); // Redirect to admin dashboard
+        navigate('/admin');
       } else {
-        navigate('/user'); // Redirect to user dashboard
+        navigate('/user');
       }
     } catch (err) {
-      setError('Invalid email or password'); // Show error if login fails
+      setError('Invalid email or password');
     } finally {
-      setLoading(false); // Hide loader after login attempt
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
-      {/* Show the Loader when loading is true */}
       {loading && <Loader />}
-
       <Container maxWidth="xs" className="login-box">
-        <Typography variant="h4" component="h1" align="center" className="login-title">
-          Login
-        </Typography>
+        <Typography variant="h4" component="h1" align="center" className="login-title">Login</Typography>
         <Box component="form" onSubmit={handleSubmit} className="login-form">
           {error && <Typography color="error">{error}</Typography>}
           <TextField
@@ -58,7 +48,6 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="login-input"
           />
           <TextField
             id="password"
@@ -70,12 +59,15 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="login-input"
           />
-          <Button name="login" type="submit" variant="contained" color="primary" fullWidth className="login-button">
-            Login
-          </Button>
+          <Button type="submit" variant="contained" color="primary" fullWidth>Login</Button>
         </Box>
+
+        {/* Forgot Password Link */}
+        <div className="auth-link">
+          <span>Forgot your password? </span>
+          <a href="/forgot-password">Reset it here</a>
+        </div>
 
         {/* Register Link */}
         <div className="auth-link">
