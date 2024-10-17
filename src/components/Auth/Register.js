@@ -32,26 +32,42 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validate if the email is a Gmail address
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    if (!gmailRegex.test(formData.email)) {
+      toast.error('Only Gmail addresses are accepted.', {
+        toastId: 'emailValidation',
+      });
+      return;
+    }
+  
     try {
       const { data } = await API.post('/auth/register', formData);
-
+  
       // Show success toast message
       toast.success(`User ${data.firstName} ${data.lastName} registered successfully!`, {
         toastId: 'notifyme',
-        onOpen: () => setToastPaused(false),  // Set toastPaused to false when toast opens
+        onOpen: () => setToastPaused(false),
         onClose: () => {
           if (!toastPaused) {
             navigate('/login');
           }
         }, // Navigate to login only if not paused
-        onMouseEnter: () => setToastPaused(true), // Set toastPaused to true on hover
-        onMouseLeave: () => setToastPaused(false), // Set toastPaused to false when hover ends
+        onMouseEnter: () => setToastPaused(true), // Pause toast on hover
+        onMouseLeave: () => setToastPaused(false), // Resume toast when hover ends
       });
-
     } catch (err) {
-      toast.error('Registration failed. Please try again.');
+      // Check if the error is about the user already existing
+      if (err.response && err.response.status === 400 && err.response.data.message === 'User already exists with this email address') {
+        toast.error('User with this email address already exists.');
+      } else {
+        toast.error('Registration failed. Please try again.');
+      }
     }
   };
+  
+  
 
   return (
     <Container maxWidth="xs">
