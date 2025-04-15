@@ -48,15 +48,9 @@ const Register = () => {
       // Show success toast message
       toast.success(`User ${data.firstName} ${data.lastName} registered successfully!`, {
         toastId: 'notifyme',
-        onOpen: () => setToastPaused(false),
-        onClose: () => {
-          if (!toastPaused) {
-            navigate('/login');
-          }
-        }, // Navigate to login only if not paused
-        onMouseEnter: () => setToastPaused(true), // Pause toast on hover
-        onMouseLeave: () => setToastPaused(false), // Resume toast when hover ends
+        onClose: () => navigate('/login'),
       });
+      
     } catch (err) {
       // Check if the error is about the user already existing
       if (err.response && err.response.status === 400 && err.response.data.message === 'User already exists with this email address') {
@@ -71,7 +65,7 @@ const Register = () => {
 
   return (
     <Container maxWidth="xs">
-      <ToastContainer position="bottom-center" autoClose={3000} pauseOnHover /> {/* Add ToastContainer for toast messages */}
+      <ToastContainer position="bottom-center" autoClose={3000} pauseOnHover={false} /> {/* Add ToastContainer for toast messages */}
       <Box className="auth-box">
         <Typography variant="h4" component="h1" className="auth-title">
           Register
